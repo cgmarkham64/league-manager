@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+  server:
+    container_name: league-manager-api
+    restart: unless-stopped
+    build: ./league-manager-server
+    ports:
+      - '4000:4000'
+    env_file: ./league-manager-server/.env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - internal
+    depends_on:
+      - database
+
+  ui:
+    container_name: league-manager-ui
+    restart: unless-stopped
+    build: ./league-manager-ui
+    environment:
+      - NODE_PATH=/app/src
+    ports:
+      - '80:80'
+    depends_on:
+      - server
+    networks:
+      - internal
+
+  database:
+    container_name: league-manager-mongodb
+    image: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: node-app
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+    networks:
+      - internal
+
+networks:
+  internal:
+
+volumes:
+  mongo_data: {}
+  mongo_config: {}

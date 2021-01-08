@@ -1,0 +1,35 @@
+.home-carousel {
+  height: 650px;
+  width: 80vw;
+  margin: 60px auto 10px auto;
+}
+
+.home-carousel-caption {
+  background: rgba(0, 0, 0, 0.45);
+  width: 100%;
+}
+
+.carousel-item-panel {
+  background-color: #333;
+}
+
+.carousel-image {
+  height: 650px;
+}
+
+.player-carousel-image {
+  height: 450px;
+}
+
+.carousel-content-button {
+  margin: 0 10px;
+}
+
+.page-row {
+  margin-top: 10px;
+}
+
+.main-page-card {
+  margin: 0 5px;
+  width: 20vw;
+}
