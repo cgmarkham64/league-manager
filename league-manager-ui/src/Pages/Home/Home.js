@@ -1,10 +1,53 @@
 import React from "react";
 import {Button, Card, Carousel, Container, Col, Row} from "react-bootstrap";
-import {axios} from "axios";
+import axios from "axios";
 
 import "./Home.css";
 
 class Home extends React.Component {
+  // initialize our state
+  state = {
+    data: [],
+    id: 0,
+    message: null,
+    intervalIsSet: false,
+    idToDelete: null,
+    idToUpdate: null,
+    objectToUpdate: null,
+  };
+
+  // I'm one with the data, the data is with me
+  componentDidMount() {
+    this.getDataFromDb();
+    // if (!this.state.intervalIsSet) {
+    //   let interval = setInterval(this.getDataFromDb, 1000);
+    //   this.setState({ intervalIsSet: interval });
+    // }
+  }
+
+  // let the process die, kill it if you must -- Kylo Ren
+  componentWillUnmount() {
+    // if (this.state.intervalIsSet) {
+    //   clearInterval(this.state.intervalIsSet);
+    //   this.setState({ intervalIsSet: null });
+    // }
+  }
+
+  // our first get method that uses our backend api to
+  // fetch data from our data base
+  getDataFromDb = async () => {
+    console.log("getting data from db");
+    axios.get(`http://localhost:4000/api/getPageContent`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(response => {
+      console.log("GOT PAGE CONTENT", response.data);
+      // const persons = response.data;
+      // this.setState({ persons });
+    });
+  }
+
   render() {
     return (
       <Container fluid className="page-container">
