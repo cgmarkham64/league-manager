@@ -1,0 +1,69 @@
+[
+  {
+    "title": "League Management",
+    "description": "Your league's single source for scheduling, statistic tracking, payment and more!",
+    "buttonText": "Create a League",
+    "buttonType": "primary",
+    "imageRef": [
+      "/resources/college_baseball.jpg"
+    ],
+    "page": "home",
+    "position": "carousel"
+  },
+  {
+    "title": "Sign Up to Play",
+    "description": "Have you ever felt like you can't find sporting or gaming events to participate in?",
+    "buttonText": "Join!",
+    "buttonType": "primary",
+    "imageRef": [
+      "/resources/register_now.jpg"
+    ],
+    "page": "home",
+    "position": "carousel"
+  },
+  {
+    "title": "News",
+    "description": "Find out what has been going on with League Manager",
+    "buttonText": "What's the News?",
+    "buttonType": "primary",
+    "imageRef": [
+      "/resources/news_example.jpeg"
+    ],
+    "page": "home",
+    "position": "cards"
+  },
+  {
+    "title": "Create a League",
+    "description": "Organize teams, adjust schedules, and process payments for your league.",
+    "buttonText": "League Management",
+    "buttonType": "primary",
+    "imageRef": [
+      "/resources/league_organization.jpg"
+    ],
+    "page": "home",
+    "position": "cards"
+  },
+  {
+    "title": "Manage Your Team",
+    "description": "Plan for your next win by adjusting your team's roster and viewing stats.",
+    "buttonText": "What's the News?",
+    "buttonType": "primary",
+    "imageRef": [
+      "/resources/league_organization.jpg"
+    ],
+    "page": "home",
+    "position": "cards"
+  },
+  {
+    "title": "Player Portal",
+    "description": "See individual player stats, manage payments, and sign up to play!",
+    "buttonText": "Player Management",
+    "buttonType": "primary",
+    "imageRef": [
+      "/resources/youth_baseball.jpg",
+      "/resources/college_basketball.jpg"
+    ],
+    "page": "home",
+    "position": "cards"
+  }
+]
