@@ -49,7 +49,7 @@
     "buttonText": "What's the News?",
     "buttonType": "primary",
     "imageRef": [
-      "/resources/league_organization.jpg"
+      "/resources/league_roster.jpg"
     ],
     "page": "home",
     "position": "cards"
