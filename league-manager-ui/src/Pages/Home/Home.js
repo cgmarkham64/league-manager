@@ -3,6 +3,7 @@ import {Button, Card, Carousel, Container, Col, Row} from "react-bootstrap";
 import axios from "axios";
 
 import "./Home.css";
+import {database_URL} from "../../constants";
 
 class Home extends React.Component {
   // initialize component state
@@ -19,7 +20,7 @@ class Home extends React.Component {
   // our first get method that uses our backend api to
   // fetch data from our data base
   getDataFromDb = () => {
-    axios.get(`http://localhost:4000/api/getPageContent`, {
+    axios.get(`${database_URL}/api/getPageContent`, {
       headers: {
         'Content-Type': 'application/json',
       }
@@ -52,7 +53,7 @@ class Home extends React.Component {
             <Carousel className="home-carousel">
               {this.state.carouselContent.map(carouselItem => (
                   <Carousel.Item className={"carousel-item-panel"} key={carouselItem._id}>
-                    <img className="carousel-image" src={window.location.origin + carouselItem.imageRef[0]}/>
+                    <img className="carousel-image" src={window.location.origin + carouselItem.imageRef[0]} alt={""}/>
                     <Carousel.Caption className="home-carousel-caption" style={{right:"0px", left: "0px", bottom: "0px"}}>
                       <h3>{carouselItem.title}</h3>
                       <p>{carouselItem.description}
@@ -73,7 +74,7 @@ class Home extends React.Component {
                 {cardItem.imageRef.length > 1 ? (<Carousel indicators={false} controls={false} style={{margin: "0px", padding: "0px", width:"100%"}} interval={3000}>
                   {cardItem.imageRef.map((imageRefString, idx) => (
                       <Carousel.Item>
-                        <img className="player-carousel-image" src={window.location.origin + imageRefString} key={idx}/>
+                        <img className="player-carousel-image" src={window.location.origin + imageRefString} key={idx} alt={""}/>
                       </Carousel.Item>
                   ))}
                 </Carousel>) : <Card.Img variant="top" src={window.location.origin + cardItem.imageRef[0]}/>}
