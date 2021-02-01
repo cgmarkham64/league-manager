@@ -1,7 +1,9 @@
 import React from "react";
 
 import "./Leagues.css";
-import {Container, Button} from "react-bootstrap";
+import {Container, Button, Table} from "react-bootstrap";
+import axios from "axios";
+import {database_URL} from "../../constants";
 
 class Leagues extends React.Component {
   state = {
@@ -21,6 +23,21 @@ class Leagues extends React.Component {
     this.deleteLeague = this.deleteLeague.bind(this);
   }
 
+  componentDidMount() {
+    this.getLeaguesFromDb();
+  }
+
+  getLeaguesFromDb = () => {
+    axios.get(`${database_URL}/api/leagues`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then(response => {
+      console.log("response leagues is ", response);
+      this.setState({leaguesList: response.data.data});
+    });
+  }
+
   /**
    * Create a new league
    */
@@ -36,6 +53,10 @@ class Leagues extends React.Component {
   editLeague = (league) => {
     // TODO edit league
     console.log("Editing League... TODO", league);
+    axios.post('http://localhost:3001/api/putData', {
+      id: league.id,
+      league: league,
+    });
   }
 
   /**
@@ -54,6 +75,26 @@ class Leagues extends React.Component {
       <Button variant="primary" onClick={() => this.createNewLeague()}>Create League</Button>
       <Button variant="secondary" onClick={() => this.editLeague(this.state.selectedLeague)}>Edit League</Button>
       <Button variant="warning" onClick={() => this.deleteLeague(this.state.selectedLeague)}>Delete League</Button>
+      <Table striped bordered hover variant="dark">
+        <thead>
+          <th>Name</th>
+          <th>Commissioner</th>
+          <th>Sport</th>
+          <th>Teams</th>
+        </thead>
+        <tbody>
+          {this.state.leaguesList.map(league => (
+              <tr>
+                <td>{league.name}</td>
+                <td>{league.commissioner}</td>
+                <td>{league.sport}</td>
+                <td>{league.teams.map(team => {
+                  return <ul>{team}</ul>;
+                })}</td>
+              </tr>
+          ))}
+        </tbody>
+      </Table>
     </Container>)
   }
 }

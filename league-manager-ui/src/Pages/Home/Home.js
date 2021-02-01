@@ -12,13 +12,10 @@ class Home extends React.Component {
     cardContent: [],
   };
 
-  // I'm one with the data, the data is with me
   componentDidMount() {
     this.getDataFromDb();
   }
 
-  // our first get method that uses our backend api to
-  // fetch data from our data base
   getDataFromDb = () => {
     axios.get(`${database_URL}/api/getPageContent`, {
       headers: {
