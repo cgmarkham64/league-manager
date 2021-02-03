@@ -3,7 +3,6 @@ const Schema = mongoose.Schema;
 
 const TeamSchema = new Schema(
     {
-        _id: String,
         name: String,
         players: [{type: Schema.Types.ObjectId, ref: "UserSchema"}],
         coach: {type: Schema.Types.ObjectId, ref: "UserSchema"},
@@ -13,5 +12,4 @@ const TeamSchema = new Schema(
     {collection: "Teams"}
 );
 
-module.exports.TeamSchema = TeamSchema;
-module.exports.TeamModel = mongoose.model("TeamSchema", TeamSchema);
+module.exports = mongoose.model("TeamSchema", TeamSchema);

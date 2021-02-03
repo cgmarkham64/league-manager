@@ -6,16 +6,14 @@ import axios from "axios";
 import {database_URL} from "../../constants";
 
 class Leagues extends React.Component {
-  state = {
-    selectedLeague: null,
-    leaguesList: [],
-  };
+  state = {};
 
   constructor(props) {
     super(props);
     this.state = {
       selectedLeague: null,
       leaguesList: [],
+      teamsMap: {}
     };
 
     this.createNewLeague = this.createNewLeague.bind(this);
@@ -25,6 +23,13 @@ class Leagues extends React.Component {
 
   componentDidMount() {
     this.getLeaguesFromDb();
+    // axios.get(`${database_URL}/api/league/601844d91ac44e2c2187e1fe`, {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   }
+    // }).then(response => {
+    //   console.log("GOT a LEAGUES??? ", response);
+    // })
   }
 
   getLeaguesFromDb = () => {
@@ -34,7 +39,29 @@ class Leagues extends React.Component {
       }
     }).then(response => {
       console.log("response leagues is ", response);
-      this.setState({leaguesList: response.data.data});
+      const tempLeaguesList = response.data.data;
+      let tempTeamsMap = {...this.state.teamsMap};
+      tempLeaguesList.forEach(league => {
+        if(tempTeamsMap[league._id]) {
+
+        } else {
+          tempTeamsMap[league._id] = {};
+          league.teams.forEach(teamId => {
+            // get each team and write to tempTeamsMap object as mapped object teamId -> team
+            axios.get(`${database_URL}/api/team/${teamId}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            }).then(teamsResponse => {
+              console.log("teamsResponse is ", teamsResponse);
+            });
+          });
+        }
+      });
+
+
+
+      this.setState({leaguesList: tempLeaguesList});
     });
   }
 
@@ -52,10 +79,12 @@ class Leagues extends React.Component {
    */
   editLeague = (league) => {
     // TODO edit league
-    console.log("Editing League... TODO", league);
-    axios.post('http://localhost:3001/api/putData', {
+    console.log("Editing League...", league);
+    axios.post(`${database_URL}/api/updateLeague`, {
       id: league.id,
       league: league,
+    }).then(() => {
+      this.getLeaguesFromDb();
     });
   }
 
@@ -84,12 +113,12 @@ class Leagues extends React.Component {
         </thead>
         <tbody>
           {this.state.leaguesList.map(league => (
-              <tr>
+              <tr key={league._id}>
                 <td>{league.name}</td>
                 <td>{league.commissioner}</td>
                 <td>{league.sport}</td>
-                <td>{league.teams.map(team => {
-                  return <ul>{team}</ul>;
+                <td>{league.teams.map(teamId => {
+                  return <ul key={teamId}>{teamId}</ul>;
                 })}</td>
               </tr>
           ))}

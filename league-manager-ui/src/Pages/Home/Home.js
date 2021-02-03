@@ -70,8 +70,8 @@ class Home extends React.Component {
               <Card className="main-page-card" bg="secondary" text="white">
                 {cardItem.imageRef.length > 1 ? (<Carousel indicators={false} controls={false} style={{margin: "0px", padding: "0px", width:"100%"}} interval={3000}>
                   {cardItem.imageRef.map((imageRefString, idx) => (
-                      <Carousel.Item>
-                        <img className="player-carousel-image" src={window.location.origin + imageRefString} key={idx} alt={""}/>
+                      <Carousel.Item key={"carousel-image-" + idx}>
+                        <img className="player-carousel-image" src={window.location.origin + imageRefString}  alt={""}/>
                       </Carousel.Item>
                   ))}
                 </Carousel>) : <Card.Img variant="top" src={window.location.origin + cardItem.imageRef[0]}/>}

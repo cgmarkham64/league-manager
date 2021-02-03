@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 // this will be our data base's data structure
 const PageContentSchema = new Schema(
     {
-        _id: String,
         title: String,
         description: String,
         buttonText: String,

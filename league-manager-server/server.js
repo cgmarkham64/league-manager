@@ -6,8 +6,12 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const http = require("http");
 const cors = require("cors");
+const {ObjectId} = require("bson");
+
 const PageContent = require("./schemas/PageSchema.js");
-const LeagueSchema = require("./schemas/LeagueSchema.js");
+const League = require("./schemas/LeagueSchema.js");
+// const User = require("./schemas/UserSchema.js"); // TODO implement
+const Team = require("./schemas/TeamSchema.js");
 
 const router = express.Router();
 
@@ -49,10 +53,10 @@ router.get('/getPageContent', (req, res) => {
 });
 
 /**
- * Retrieve all leagues from database
+ * GET all Leagues
  */
 router.get('/leagues', (req, res) => {
-    LeagueSchema.find((err, data) => {
+    League.find((err, data) => {
         if(err) {
             console.error(`ERROR: Could not GET leagues.`);
             return res.json({success: false, error: err});
@@ -62,67 +66,147 @@ router.get('/leagues', (req, res) => {
 });
 
 /**
- * GET a single league with via ID
+ * GET League with ID
  * @param: {leagueId}
  */
-router.get('league', (req, res)=> {
-    const {id} = req.body;
-    LeagueSchema.findById(id, (err, data)=> {
+router.get('/league/:id', (req, res)=> {
+    const id = req.params.id;
+    League.findById(id, (err, data) => {
         if(err) {
-            console.error(`ERROR: Could not GET single league, ${id}`);
+            console.error(`ERROR: Could not GET League, ${id}`);
+            return res.json({success: false, error: err});
+        }
+        console.log("data response is ", data)
+        return res.json({success: true, data});
+    });
+});
+
+/**
+ * TODO CREATE NEW League
+ * @param: {League}
+ */
+router.post('/league', (req, res) => {
+    // TODO still need implementation
+    // const {league} = req.body;
+    // LeagueSchema.create(league, (err) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not CREATE league.`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true});
+    // });
+});
+
+/**
+ * TODO UPDATE League with ID and League Json Object
+ * @param: {ID, League}
+ */
+router.post('/league/:id', (req, res) => {
+    // TODO still need implementation
+    // const {id, league} = req.body;
+    // LeagueSchema.findByIdAndUpdate(id, league, (err) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not UPDATE league ${id}.`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     console.log("updated League", id);
+    //     return res.json({success: true});
+    // });
+});
+
+/**
+ * TODO DELETE League with ID
+ * @param: {ID}
+ */
+router.delete('/league/:id', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // LeagueSchema.findByIdAndRemove(id, (err) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not DELETE League, ${id}.`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     console.log("DELETED League", id);
+    //     return res.json({success: true});
+    // });
+});
+
+/**
+ * GET all Teams
+ */
+router.get('/teams', (req, res) => {
+    Team.find((err, data) => {
+        if(err) {
+            console.error(`ERROR: Could not GET Teams.`);
             return res.json({success: false, error: err});
         }
         return res.json({success: true, data});
-    })
-})
-
-/**
- * Create a new League
- * @param: {League}
- */
-router.post('/createLeague', (req, res) => {
-    const {league} = req.body;
-    LeagueSchema.create(league, (err) => {
-        if(err) {
-            console.error(`ERROR: Could not CREATE league.`);
-            return res.json({success: false, error: err});
-        }
-        return res.json({success: true});
     });
 });
 
 /**
- * Update league with ID and League Json Object
- * @param: {ID, League}
+ * GET Team with ID
+ * @param: id
  */
-router.post('/updateLeague', (req, res) => {
-    const {id, league} = req.body;
-    LeagueSchema.findByIdAndUpdate(id, league, (err) => {
+router.get('/team/:id', (req, res) => {
+    const id = req.params.id;
+    Team.findById(id,(err, data) => {
         if(err) {
-            console.error(`ERROR: Could not UPDATE league ${id}.`);
+            console.error(`ERROR: Could not GET Team, ${id}`);
             return res.json({success: false, error: err});
         }
-        console.log("updated League", id, data);
-        return res.json({success: true});
+        console.log("data response is ", data)
+        return res.json({success: true, data});
     });
 });
 
 /**
- * Delete league with ID
- * @param: {ID}
+ * TODO CREATE NEW Team
  */
-router.delete('/removeLeague', (req, res) => {
-    const {id} = req.body;
-    LeagueSchema.findByIdAndRemove(id, (err) => {
-        if(err) {
-            console.error(`ERROR: Could not DELETE league ${id}.`);
-            return res.json({success: false, error: err});
-        }
-        console.log("DELETED League", id);
-        return res.json({success: true});
-    });
+router.post('/team', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // Team.findById(id, (err, data) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not GET Team, ${id}`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true, data});
+    // });
 });
+
+/**
+ * TODO UPDATE Team with ID and Team JSON Object
+ * @param: id
+ */
+router.post('/team/:id', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // Team.findById(id, (err, data) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not GET Team, ${id}`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true, data});
+    // });
+});
+
+/**
+ * TODO DELETE Team
+ * @param: id
+ */
+router.delete('/team/:id', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // Team.findById(id, (err, data) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not GET Team, ${id}`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true, data});
+    // });
+});
+
 
 const server = http.createServer(app);
-
 server.listen(process.env.PORT ? process.env.PORT : 4000);

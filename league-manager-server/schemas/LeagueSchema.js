@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const LeagueContentSchema = new Schema(
+const LeagueSchema = new Schema(
     {
-        _id: String,
         name: String,
         commissioner: {type: Schema.Types.ObjectId, ref: "UserSchema"},
         sport: String,  //TODO change to sports enum
@@ -13,4 +12,4 @@ const LeagueContentSchema = new Schema(
 );
 
 // export the new Schema so we can modify it using Node.js
-module.exports = mongoose.model("LeagueSchema", LeagueContentSchema);
+module.exports = mongoose.model("LeagueSchema", LeagueSchema);
