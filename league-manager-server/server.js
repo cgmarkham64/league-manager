@@ -82,18 +82,19 @@ router.get('/league/:id', (req, res)=> {
 });
 
 /**
- * TODO CREATE NEW League
+ * TODO CREATE new League
  * @param: {League}
  */
 router.post('/league', (req, res) => {
     // TODO still need implementation
     // const {league} = req.body;
-    // LeagueSchema.create(league, (err) => {
-    //     if(err) {
+    // League.create(league, (err) => {
+    //     if (err) {
     //         console.error(`ERROR: Could not CREATE league.`);
     //         return res.json({success: false, error: err});
     //     }
-    //     return res.json({success: true});
+    // }).then(result => {
+    //     return res.json({success: true, data: result});
     // });
 });
 
@@ -104,7 +105,7 @@ router.post('/league', (req, res) => {
 router.post('/league/:id', (req, res) => {
     // TODO still need implementation
     // const {id, league} = req.body;
-    // LeagueSchema.findByIdAndUpdate(id, league, (err) => {
+    // League.findByIdAndUpdate(id, league, null, (err) => {
     //     if(err) {
     //         console.error(`ERROR: Could not UPDATE league ${id}.`);
     //         return res.json({success: false, error: err});

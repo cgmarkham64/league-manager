@@ -1,7 +1,7 @@
 import React from "react";
 
 import "./Leagues.css";
-import {Container, Button, Table} from "react-bootstrap";
+import {Button, Container, Table} from "react-bootstrap";
 import axios from "axios";
 import {database_URL} from "../../constants";
 
@@ -13,7 +13,8 @@ class Leagues extends React.Component {
     this.state = {
       selectedLeague: null,
       leaguesList: [],
-      teamsMap: {}
+      leaguesListTableBody: null,
+      leagueTeamMap: null
     };
 
     this.createNewLeague = this.createNewLeague.bind(this);
@@ -23,46 +24,58 @@ class Leagues extends React.Component {
 
   componentDidMount() {
     this.getLeaguesFromDb();
-    // axios.get(`${database_URL}/api/league/601844d91ac44e2c2187e1fe`, {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   }
-    // }).then(response => {
-    //   console.log("GOT a LEAGUES??? ", response);
-    // })
   }
 
+  /**
+   * Retrieves all the leagues in the League Manager application for display in Leagues Table
+   */
   getLeaguesFromDb = () => {
     axios.get(`${database_URL}/api/leagues`, {
       headers: {
         'Content-Type': 'application/json',
       }
     }).then(response => {
-      console.log("response leagues is ", response);
-      const tempLeaguesList = response.data.data;
-      let tempTeamsMap = {...this.state.teamsMap};
-      tempLeaguesList.forEach(league => {
-        if(tempTeamsMap[league._id]) {
+      const leaguesList = response.data.data;
+      let leagueTeamMap = {};
 
-        } else {
-          tempTeamsMap[league._id] = {};
-          league.teams.forEach(teamId => {
-            // get each team and write to tempTeamsMap object as mapped object teamId -> team
-            axios.get(`${database_URL}/api/team/${teamId}`, {
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            }).then(teamsResponse => {
-              console.log("teamsResponse is ", teamsResponse);
+      leaguesList.forEach(league => {
+        league.teams.forEach(teamId => {
+          // create league -> team map object if doesn't exist
+          if(leagueTeamMap[league._id] === undefined){
+            leagueTeamMap[league._id] = [];
+          }
+          // get team from DB and insert it into the leagueTeamMap object
+          axios.get(`${database_URL}/api/team/${teamId}`, {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }).then(response => {
+            const team = response.data.data;
+            leagueTeamMap[league._id].push(team);
+            this.setState({leaguesList: leaguesList, leagueTeamMap: leagueTeamMap}, () => {
+              this.updateLeaguesListTable();
             });
           });
-        }
+        });
       });
-
-
-
-      this.setState({leaguesList: tempLeaguesList});
     });
+  }
+
+  /**
+   * Update the leagues table with latest league and team info
+   */
+  updateLeaguesListTable = () => {
+    let returnBody = null;
+    // create leagues table body with league info and pre retrieved team info
+    this.state.leaguesList.forEach(league => {
+      returnBody = (<tr key={league._id}>
+        <td>{league.name}</td>
+        <td>{league.commissioner}</td>
+        <td>{league.sport}</td>
+        <td>{this.state.leagueTeamMap[league._id].map(team => <ul key={team._id}>{team.name}</ul>)}</td>
+      </tr>);
+    });
+    this.setState({leaguesListTableBody: returnBody});
   }
 
   /**
@@ -112,16 +125,7 @@ class Leagues extends React.Component {
           <th>Teams</th>
         </thead>
         <tbody>
-          {this.state.leaguesList.map(league => (
-              <tr key={league._id}>
-                <td>{league.name}</td>
-                <td>{league.commissioner}</td>
-                <td>{league.sport}</td>
-                <td>{league.teams.map(teamId => {
-                  return <ul key={teamId}>{teamId}</ul>;
-                })}</td>
-              </tr>
-          ))}
+          {this.state.leaguesListTableBody}
         </tbody>
       </Table>
     </Container>)
