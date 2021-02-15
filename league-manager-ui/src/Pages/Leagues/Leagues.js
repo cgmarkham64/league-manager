@@ -14,7 +14,8 @@ class Leagues extends React.Component {
       selectedLeague: null,
       leaguesList: [],
       leaguesListTableBody: null,
-      leagueTeamMap: null
+      leagueTeamMap: {},
+      leagueCommissionerMap: {}
     };
 
     this.createNewLeague = this.createNewLeague.bind(this);
@@ -23,37 +24,48 @@ class Leagues extends React.Component {
   }
 
   componentDidMount() {
-    this.getLeaguesFromDb();
+    this.getLeaguePageDataFromDb();
   }
 
   /**
-   * Retrieves all the leagues in the League Manager application for display in Leagues Table
+   * Retrieves all the leagues, teams, and commissioners in the League Manager application for display in Leagues Table
    */
-  getLeaguesFromDb = () => {
+  getLeaguePageDataFromDb = () => {
     axios.get(`${database_URL}/api/leagues`, {
       headers: {
         'Content-Type': 'application/json',
       }
     }).then(response => {
       const leaguesList = response.data.data;
+      let leagueCommissionerMap = {};
       let leagueTeamMap = {};
 
       leaguesList.forEach(league => {
-        league.teams.forEach(teamId => {
-          // create league -> team map object if doesn't exist
-          if(leagueTeamMap[league._id] === undefined){
-            leagueTeamMap[league._id] = [];
+        let commissionerId = league.commissioner
+        axios.get(`${database_URL}/api/user/${commissionerId}`, {
+          headers: {
+            'Content-Type': 'application/json',
           }
-          // get team from DB and insert it into the leagueTeamMap object
-          axios.get(`${database_URL}/api/team/${teamId}`, {
-            headers: {
-              'Content-Type': 'application/json',
+        }).then(commissionerResponse => {
+          // set league commissioner map to the actual user object
+          leagueCommissionerMap[league._id] = commissionerResponse.data.data;
+
+          league.teams.forEach(teamId => {
+            // create league -> team map object if doesn't exist
+            if(leagueTeamMap[league._id] === undefined){
+              leagueTeamMap[league._id] = [];
             }
-          }).then(response => {
-            const team = response.data.data;
-            leagueTeamMap[league._id].push(team);
-            this.setState({leaguesList: leaguesList, leagueTeamMap: leagueTeamMap}, () => {
-              this.updateLeaguesListTable();
+            // get team from DB and insert it into the leagueTeamMap object
+            axios.get(`${database_URL}/api/team/${teamId}`, {
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            }).then(teamResponse => {
+              const team = teamResponse.data.data;
+              leagueTeamMap[league._id].push(team);
+              this.setState({leaguesList: leaguesList, leagueTeamMap: leagueTeamMap, leagueCommissionerMap: leagueCommissionerMap}, () => {
+                this.updateLeaguesListTable();
+              });
             });
           });
         });
@@ -68,11 +80,13 @@ class Leagues extends React.Component {
     let returnBody = null;
     // create leagues table body with league info and pre retrieved team info
     this.state.leaguesList.forEach(league => {
+      let commissioner = this.state.leagueCommissionerMap[league._id];
+      let teams = this.state.leagueTeamMap[league._id];
       returnBody = (<tr key={league._id}>
         <td>{league.name}</td>
-        <td>{league.commissioner}</td>
+        <td>{`${commissioner.firstName} ${commissioner.lastName}`}</td>
         <td>{league.sport}</td>
-        <td>{this.state.leagueTeamMap[league._id].map(team => <ul key={team._id}>{team.name}</ul>)}</td>
+        <td>{teams.map(team => <ul key={team._id}>{team.name}</ul>)}</td>
       </tr>);
     });
     this.setState({leaguesListTableBody: returnBody});
@@ -97,7 +111,7 @@ class Leagues extends React.Component {
       id: league.id,
       league: league,
     }).then(() => {
-      this.getLeaguesFromDb();
+      this.getLeaguePageDataFromDb();
     });
   }
 
@@ -119,10 +133,12 @@ class Leagues extends React.Component {
       <Button variant="warning" onClick={() => this.deleteLeague(this.state.selectedLeague)}>Delete League</Button>
       <Table striped bordered hover variant="dark">
         <thead>
-          <th>Name</th>
-          <th>Commissioner</th>
-          <th>Sport</th>
-          <th>Teams</th>
+          <tr>
+            <th>Name</th>
+            <th>Commissioner</th>
+            <th>Sport</th>
+            <th>Teams</th>
+          </tr>
         </thead>
         <tbody>
           {this.state.leaguesListTableBody}

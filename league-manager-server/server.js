@@ -6,11 +6,10 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const http = require("http");
 const cors = require("cors");
-const {ObjectId} = require("bson");
 
 const PageContent = require("./schemas/PageSchema.js");
 const League = require("./schemas/LeagueSchema.js");
-// const User = require("./schemas/UserSchema.js"); // TODO implement
+const User = require("./schemas/UserSchema.js");
 const Team = require("./schemas/TeamSchema.js");
 
 const router = express.Router();
@@ -208,6 +207,82 @@ router.delete('/team/:id', (req, res) => {
     // });
 });
 
+/**
+ * GET all Users
+ */
+router.get('/Users', (req, res) => {
+    User.find((err, data) => {
+        if(err) {
+            console.error(`ERROR: Could not GET Users.`);
+            return res.json({success: false, error: err});
+        }
+        return res.json({success: true, data});
+    });
+});
+
+/**
+ * GET User with ID
+ * @param: id
+ */
+router.get('/user/:id', (req, res) => {
+    const id = req.params.id;
+    User.findById(id,(err, data) => {
+        if(err) {
+            console.error(`ERROR: Could not GET User, ${id}`);
+            return res.json({success: false, error: err});
+        }
+        console.log("data response is ", data)
+        return res.json({success: true, data});
+    });
+});
+
+/**
+ * TODO CREATE NEW User
+ */
+router.post('/user', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // Team.findById(id, (err, data) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not GET Team, ${id}`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true, data});
+    // });
+});
+
+/**
+ * TODO UPDATE User with ID and User JSON Object
+ * @param: id
+ */
+router.post('/user/:id', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // Team.findById(id, (err, data) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not GET Team, ${id}`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true, data});
+    // });
+});
+
+
+/**
+ * TODO DELETE User
+ * @param: id
+ */
+router.delete('/user/:id', (req, res) => {
+    // TODO still need implementation
+    // const {id} = req.body;
+    // Team.findById(id, (err, data) => {
+    //     if(err) {
+    //         console.error(`ERROR: Could not GET Team, ${id}`);
+    //         return res.json({success: false, error: err});
+    //     }
+    //     return res.json({success: true, data});
+    // });
+});
 
 const server = http.createServer(app);
 server.listen(process.env.PORT ? process.env.PORT : 4000);
